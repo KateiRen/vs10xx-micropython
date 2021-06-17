@@ -6,17 +6,17 @@ My board is a VS1003B and the code is working, therefore I'd rather call it a VS
 
 ## Sample wiring
 
-VS1003B Board | ESP32 PIN 
---- | --- 
-5V | 5V
-GND | GND
-XRST | 21
-MISO | 12
-MOSI | 13
-SCLK | 14
-DREQ | 22
-XCS | 25
-XDCS | 23
+VS1003B Board | ESP32 PIN | Signal
+--- | --- | ---
+5V | 5V | VCC
+GND | GND | Ground
+XRST | GPIO21 | Reset (Active Low)
+MISO | GPIO12 | Master In Slave Out
+MOSI | GPIO13 | Master Out Slave In
+SCLK | GPIO14 | SPI Clock Signal 
+DREQ | GPIO22 | Data Request
+XCS | GPIO25 | Send Command (Active Low)  
+XDCS | GPIO23 | Send Data (Active Low)
 
 ## Sample code for the ESP32 board
 
