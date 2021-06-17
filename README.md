@@ -22,7 +22,6 @@ XDCS | 23
 
 ```python
 import vs10xx
-import board
 from machine import SPI
 
 spi = SPI(1, SPI_BAUDRATE) # SPI bus id=1 pinout: SCK = 14, MOSI = 13, MISO = 12
