@@ -1,9 +1,7 @@
-# VS1053 driver for CircuitPython
-# Copyright (C) 2018, Uri Shaked
+# Based on the the VS1053 driver for CircuitPython from Uri Shaked, Copyright (C) 2018, Uri Shaked
 
-import digitalio
 import time
-import board
+from machine import Pin
 
 SPI_BAUDRATE = 2000000
 
@@ -44,75 +42,72 @@ SM_ADPCM_HP = 0x2000
 
 class Player:
     def __init__(self, spi, xResetPin, dReqPin, xDCSPin, xCSPin, CSPin = None):
-        self.xReset = digitalio.DigitalInOut(xResetPin)
-        self.xReset.direction = digitalio.Direction.OUTPUT
-        self.dReq = digitalio.DigitalInOut(dReqPin)
-        self.dReq.direction = digitalio.Direction.INPUT
-        self.xDCS = digitalio.DigitalInOut(xDCSPin)
-        self.xDCS.direction = digitalio.Direction.OUTPUT
-        self.xCS = digitalio.DigitalInOut(xCSPin)
-        self.xCS.direction = digitalio.Direction.OUTPUT
+        self.xReset = Pin(xResetPin, Pin.OUT)
+        self.dReq = Pin(dReqPin, Pin.IN)
+        self.xDCS = Pin(xDCSPin, Pin.OUT)
+        self.xCS = Pin(xCSPin, Pin.OUT)
         
         if CSPin:
-            self.CS = digitalio.DigitalInOut(CSPin)
-            self.CS.direction = digitalio.Direction.OUTPUT
-            self.CS.value = True
+            self.CS = Pin(CSPin, Pin.OUT, value = 1)
         
-        self.xDCS.value = True
-        self.xCS.value = True
+        self.xDCS.value(1)
+        self.xCS.value(1)
         self.spi = spi
         self.reset()
     
     def reset(self):
-        self.xReset.value = False
+        self.xReset.value(0)
         time.sleep(0.002); # It is a must, 2ms
-        self.xCS.value = True
-        self.xDCS.value = True
-        self.xReset.value = True
+        self.xCS.value(1)
+        self.xDCS.value(1)
+        self.xReset.value(1)
         self.softReset()
         
     def waitForDREQ(self):
-        while not self.dReq.value:
+        while not self.dReq.value():
             pass
             
     def writeRegister(self, addressByte, value):
-        while not self.spi.try_lock():
-            pass
+        # while not self.spi.try_lock():
+        #     pass
         try:
-            self.xDCS.value = True
+            self.xDCS.(1)
             self.waitForDREQ()
-            self.xCS.value = False
-            self.spi.configure(baudrate=SPI_BAUDRATE)
+            self.xCS.value(0)
+            # self.spi.configure(baudrate=SPI_BAUDRATE)
             self.spi.write(bytes([VS_WRITE_COMMAND, addressByte, value >> 8, value & 0xFF]))
-            self.xCS.value = True
+            self.xCS.value(1)
         finally:
-            self.spi.unlock()
+            pass
+            # self.spi.unlock()
 
     def readRegister(self, addressByte):
-        while not self.spi.try_lock():
-            pass
+        # while not self.spi.try_lock():
+        #     pass
         try:
-            self.xDCS.value = True
+            self.xDCS.value(1)
             self.waitForDREQ()
-            self.xCS.value = False
-            self.spi.configure(baudrate=SPI_BAUDRATE)
+            self.xCS.value(0)
+            # self.spi.configure(baudrate=SPI_BAUDRATE)
             result = bytearray(4)
             self.spi.write_readinto(bytes([VS_READ_COMMAND, addressByte, 0xff, 0xff]), result)
-            self.xCS.value = True
+            self.xCS.value(1)
             return (result[2] << 8) | result[3]
         finally:
-            self.spi.unlock()
+            pass
+            # self.spi.unlock()
     
     def writeData(self, buf):
         self.waitForDREQ()
-        self.xDCS.value = False
-        while not self.spi.try_lock():
-            pass
+        self.xDCS.value(0)
+        # while not self.spi.try_lock():
+        #     pass
         try:
             self.spi.write(buf)
         finally:
-            self.spi.unlock()
-        self.xDCS.value = True
+            pass
+            # self.spi.unlock()
+        self.xDCS.value(1)
         
     def setVolume(self, volume):
         """ Sets the volume to the given value (the range is 0 to 1.0). 
