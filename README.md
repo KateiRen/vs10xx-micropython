@@ -1,6 +1,6 @@
 # VS10xx Driver for MicroPython
 
-This is an adoption of the great work by [Uri Shaked](https://github.com/urish) for CircuitPython [here](https://github.com/urish/vs1053-circuitpython).
+This is an adoption of the great work for the VS1053 by [Uri Shaked](https://github.com/urish) for CircuitPython [here](https://github.com/urish/vs1053-circuitpython).
 
 My board is a VS1003B and the code is working, therefore I'd rather call it a VS10xx library.
 
