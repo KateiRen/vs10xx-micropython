@@ -71,7 +71,7 @@ class Player:
         # while not self.spi.try_lock():
         #     pass
         try:
-            self.xDCS.(1)
+            self.xDCS.value(1)
             self.waitForDREQ()
             self.xCS.value(0)
             # self.spi.configure(baudrate=SPI_BAUDRATE)

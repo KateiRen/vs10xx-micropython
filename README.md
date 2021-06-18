@@ -24,7 +24,7 @@ XDCS | GPIO23 | Send Data (Active Low)
 import vs10xx
 from machine import SPI
 
-spi = SPI(1, SPI_BAUDRATE) # SPI bus id=1 pinout: SCK = 14, MOSI = 13, MISO = 12
+spi = SPI(1, vs10xx.SPI_BAUDRATE) # SPI bus id=1 pinout: SCK = 14, MOSI = 13, MISO = 12
 
 player = vs10xx.Player(
     spi,
